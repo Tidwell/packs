@@ -10,7 +10,7 @@ var sqs = new aws.SQS({
 });
 
 var app = Consumer.create({
-  queueUrl: 'https://sqs.us-east-1.amazonaws.com/898046519466/packs-test',
+  queueUrl: config.queueUrl,
   handleMessage: function (message, done) {
     console.log(JSON.parse(message.Body));
     done();

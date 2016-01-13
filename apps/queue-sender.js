@@ -10,7 +10,7 @@ var sqs = new aws.SQS({
 	secretAccessKey: config.secretAccessKey,
 
 	params: {
-		QueueUrl: 'https://sqs.us-east-1.amazonaws.com/898046519466/packs-test'
+		QueueUrl: config.queueUrl
 	}
 });
 
