@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Example App</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+</head>
+<body>
+
+<div auth>
+    {data | json}
+    <br />
+    <form rv-unless="data.authed">
+        Username: <input name="username" type="text" />
+        <br />
+        Password: <input name="password" type="password" />
+        <br />
+        <input type="submit" value="Login" />
+        <br />
+        <span> {data.msg} </span>
+    </form>
+    <div rv-if="data.authed">
+        {data.user.name}
+        <br />
+        {data.user.id}
+        <br />
+        <button logout>Logout</button>
+    </div>
+</div>
+<br />
+<div matchmaking>
+    {data | json}
+    <br />
+    <button matchmake rv-unless="data.searching">Find Game</button>
+    <span rv-if="data.searching">Searching</span>
+</div>
+<div template name="board"> 
+    <div>Turn: {game.turn}</div>
+    <div>Active Player: <span rv-text="game.activePlayerName < activePlayer"></span></div>
+    <br />
+    <div rv-each-player="game.players">
+        <div>{ player.name }</div>
+        <div>Currency { player.currency }</div>
+        <br />
+        PLAY
+        <div class="zone">
+            <div class="card" rv-each-card="player.zones.play">
+                { card.name }
+                <span>{ card.cost }</span>
+                <p>
+                    { card.text }
+                    { card.id }
+                </p>
+            </div>
+        </div>
+        DECK
+        <div class="zone">
+            <div class="card" rv-each-card="player.zones.deck">
+                { card.name }
+                <span>{ card.cost }</span>
+                <p>
+                    { card.text }
+                    { card.id }
+                </p>
+            </div>
+        </div>
+        HAND
+        <div class="zone">
+            <div class="card" rv-each-card="player.zones.hand">
+                { card.name }
+                <span>{ card.cost }</span>
+                <p>
+                    { card.text }
+                    { card.id }
+                </p>
+            </div>
+        </div>
+        DISCARD
+        <div class="zone">
+            <div class="card" rv-each-card="player.zones.discard">
+                { card.name }
+                <span>{ card.cost }</span>
+                <p>
+                    { card.text }
+                    { card.id }
+                </p>
+            </div>
+        </div>
+        <hr />
+    </div>
+</div>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/amplifyjs/1.1.2/amplify.core.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.8.1/rivets.bundled.min.js"></script>
+
+<script type="text/javascript" src="/js/api.js"></script>
+<script type="text/javascript" src="/js/login.js"></script>
+<script type="text/javascript" src="/js/matchmaking.js"></script>
+<script type="text/javascript" src="/js/render.js"></script>
+</body>
+</html>

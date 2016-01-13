@@ -3,7 +3,9 @@ var Schema = mongoose.Schema;
 
 var User = new Schema({
 	name: String,
-	password: String
+	password: String,
+	searching: Boolean,
+	inGame: Boolean
 });
 
 /* BAD */
