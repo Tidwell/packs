@@ -16,7 +16,7 @@
 	}
 
 	function setFail(res) {
-		data.msg = res.responseJSON.error;
+		data.msg = res.responseJSON ? res.responseJSON.error : res.responseText;
 	}
 
 	function init() {
@@ -26,12 +26,11 @@
 
 		rivets.bind($auth, {data: data});
 
-		$form.submit(function(){
+		$auth.on('submit', $form, function(){
 			data.msg = '';
 			API.auth($form.find('[name="username"]').val(), $form.find('[name="password"]').val())
 				.then(setAuthed)
 				.fail(function(res) {
-					console.log(res)
 					//user is already authed
 					if (res.status === 400) {
 						return getUser();
@@ -41,7 +40,7 @@
 			return false;
 		});
 
-		$logout.click(function() {
+		$auth.on('click', $logout, function() {
 			API.logout()
 				.then(function() {
 					data.authed = false;

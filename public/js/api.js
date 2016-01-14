@@ -19,6 +19,9 @@ var API = (function($) {
 		matchmake: function() {
 			return $.post(DOMAIN + '/search-game');
 		},
+		cancelMatchmake: function() {
+			return $.post(DOMAIN + '/cancel-search-game');
+		},
 		getUser: function() {
 			return $.get(DOMAIN + '/user');
 		}

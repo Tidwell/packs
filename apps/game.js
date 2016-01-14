@@ -12,7 +12,7 @@ var queueSender = require('./queue-sender');
 
 function auth(req, res, next) {
 	if (!req.session.user) {
-		return res.send(401);
+		return res.sendStatus(401);
 	}
 	next();
 }
@@ -75,7 +75,7 @@ app.get('/logout', function(req, res) {
 
 app.post('/search-game', auth, function(req, res) {
 	if (req.session.user.searching) {
-		queueSender({type: 'matchmaking'});
+		queueSender({type: 'matchmaking', id: req.session.user.id});
 		return res.sendStatus(200);
 	}
 	models.user.findOne({
@@ -86,7 +86,25 @@ app.post('/search-game', auth, function(req, res) {
 		}
 		user.searching = true;
 		user.save(function(err) {
-			queueSender({type: 'matchmaking'});
+			queueSender({type: 'matchmaking', id: req.session.user.id});
+			return res.sendStatus(err ? 500 : 200);
+		});
+	});
+});
+app.post('/cancel-search-game', auth, function(req, res) {
+	if (!req.session.user.searching) {
+		queueSender({type: 'cancel-matchmaking', id: req.session.user.id});
+		return res.sendStatus(200);
+	}
+	models.user.findOne({
+		_id: req.session.user.id
+	}, function(err, user) {
+		if (err || !user) {
+			return res.sendStatus(500);
+		}
+		user.searching = false;
+		user.save(function(err) {
+			queueSender({type: 'cancel-matchmaking', id: req.session.user.id});
 			return res.sendStatus(err ? 500 : 200);
 		});
 	});

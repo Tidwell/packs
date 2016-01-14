@@ -32,6 +32,8 @@
     {data | json}
     <br />
     <button matchmake rv-unless="data.searching">Find Game</button>
+    <button cancel rv-if="data.searching">Cancel Search</button>
+    <br />
     <span rv-if="data.searching">Searching</span>
 </div>
 <div template name="board"> 

@@ -7,13 +7,23 @@
 		$matchmaking = $('[matchmaking]');
 		rivets.bind($matchmaking, {data: data});
 
-		$matchmaking.find('[matchmake]').click(function() {
+		$matchmaking.on('click', '[matchmake]', function() {
 			API.matchmake()
 				.then(function(res){
 					data.searching = true;
 				})
 				.fail(function(res){
 					data.searching = false;
+				});
+		});
+		$matchmaking.on('click', '[cancel]', function() {
+			API.cancelMatchmake()
+				.then(function(res){
+					data.searching = false;
+				})
+				.fail(function(res){
+					//dont do anything this shouldnt happen
+					//but if it does let them just click it again
 				});
 		});
 	}
