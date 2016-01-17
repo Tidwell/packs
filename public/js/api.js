@@ -4,26 +4,29 @@ var API = (function($) {
 			withCredentials: true
 		}
 	});
-	var DOMAIN = 'http://localhost:3000';
+	var AUTH_DOMAIN = 'http://localhost:3000';
+	var MATCHMAKING_DOMAIN = 'http://localhost:3002';
 
 	var API = {
-		auth: function(username, password) {
-			return $.post(DOMAIN + '/login', {
+		login: function(username, password) {
+			return $.post(AUTH_DOMAIN + '/login', {
 				username: username,
 				password: password
 			});
 		},
 		logout: function() {
-			return $.get(DOMAIN + '/logout');
-		},
-		matchmake: function() {
-			return $.post(DOMAIN + '/search-game');
-		},
-		cancelMatchmake: function() {
-			return $.post(DOMAIN + '/cancel-search-game');
+			return $.get(AUTH_DOMAIN + '/logout');
 		},
 		getUser: function() {
-			return $.get(DOMAIN + '/user');
+			return $.get(AUTH_DOMAIN + '/user');
+		},
+
+		
+		matchmake: function(id, token) {
+			return $.post(MATCHMAKING_DOMAIN + '/search-game', {id: id, token: token});
+		},
+		cancelMatchmake: function(id, token) {
+			return $.post(MATCHMAKING_DOMAIN + '/cancel-search-game', {id: id, token: token});
 		}
 	};
 

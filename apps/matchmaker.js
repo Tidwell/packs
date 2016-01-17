@@ -1,54 +1,35 @@
-var config = require('../config.js');
+var express = require('express');
 
-var aws = require("aws-sdk");
-var Consumer = require('sqs-consumer');
+//FIX THIS WHEN SPLIT TO ACTUAL APPS
+var mongoose = require('mongoose');
+//mongoose.connect('mongodb://localhost/packs');
 
-var sqs = new aws.SQS({
-	region: config.region,
-	accessKeyId: config.accessKeyId,
-	secretAccessKey: config.secretAccessKey,
-});
+var app = express();
 
-var activeSeeks = [];
+var queueSender = require('../lib/queue-sender');
 
-var app = Consumer.create({
-	queueUrl: config.queueUrl,
-	handleMessage: function(message, done) {
-		var data = JSON.parse(message.Body);
-		switch (data.type) {
-			case 'matchmaking':
-				if (activeSeeks.indexOf(data.id) !== -1) {
-					break;
-				}
-				activeSeeks.push(data.id);
-				break;
-			case 'cancel-matchmaking':
-				if (activeSeeks.indexOf(data.id) === -1) {
-					break;
-				}
-				activeSeeks.splice(activeSeeks.indexOf(data.id), 1);
-				break;
-		}
-		checkPairings();
-		done();
-	},
-	sqs: sqs
-});
+var bodyParser = require('body-parser');
+var crossDomain = require('../lib/cross-domain');
 
-//randomly pulls 2 players from the queue and pairs them up
-function checkPairings() {
-	while (activeSeeks.length >= 2) {
-		var players = [];
-		var rand1 = Math.floor(Math.random()*activeSeeks.length);
-		var randomPlayer = activeSeeks.splice(rand1, 1)[0];
-		//do it in this order since we need to remove the selected one before we randomly decide the next one
-		var rand2 = Math.floor(Math.random()*activeSeeks.length);
-		var randomPlayer2 = activeSeeks.splice(rand2, 1)[0];
-		players.push(randomPlayer);
-		players.push(randomPlayer2);
-		console.log('Create game between: ', randomPlayer, randomPlayer2);
-	}
-	console.log('Awaiting pairings:', activeSeeks);
+app.use(bodyParser.urlencoded({
+	extended: false
+}));
+app.use(crossDomain);
+
+function auth(req, res, next) {
+	if (!req.body || !req.body.id || !req.body.token) { return res.sendStatus(400); }
+	//TODO: CHECK API IF ACTUALLY AUTHED
+	
+	next();
 }
+app.post('/search-game', auth, function(req, res) {
+	queueSender({type: 'matchmaking', id: req.body.id});
+	return res.sendStatus(200);
+});
+app.post('/cancel-search-game', auth, function(req, res) {
+	queueSender({type: 'cancel-matchmaking', id: req.body.id});
+	return res.sendStatus(200);
+});
 
-app.start();
+
+app.listen(3002);

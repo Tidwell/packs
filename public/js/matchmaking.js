@@ -8,7 +8,7 @@
 		rivets.bind($matchmaking, {data: data});
 
 		$matchmaking.on('click', '[matchmake]', function() {
-			API.matchmake()
+			API.matchmake(USERID, USERTOKEN)
 				.then(function(res){
 					data.searching = true;
 				})
@@ -17,7 +17,7 @@
 				});
 		});
 		$matchmaking.on('click', '[cancel]', function() {
-			API.cancelMatchmake()
+			API.cancelMatchmake(USERID, USERTOKEN)
 				.then(function(res){
 					data.searching = false;
 				})

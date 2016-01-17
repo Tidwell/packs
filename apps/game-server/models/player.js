@@ -18,7 +18,7 @@ function shuffleArray(array) {
 var STARTING_DECK_SIZE = 8;
 
 var Player = new Schema({
-	user: Schema.Types.ObjectId,
+	userId: Schema.Types.ObjectId,
 	name: String,
 	zones: {
 		deck: [String],
