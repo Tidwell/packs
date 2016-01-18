@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 
 var app = express();
 
-var queueSender = require('../lib/queue-sender');
+var queue = require('../lib/queue');
 
 var bodyParser = require('body-parser');
 var crossDomain = require('../lib/cross-domain');
@@ -23,11 +23,11 @@ function auth(req, res, next) {
 	next();
 }
 app.post('/search-game', auth, function(req, res) {
-	queueSender({type: 'matchmaking', id: req.body.id});
+	queue.send('matchmaking', {type: 'search', id: req.body.id});
 	return res.sendStatus(200);
 });
 app.post('/cancel-search-game', auth, function(req, res) {
-	queueSender({type: 'cancel-matchmaking', id: req.body.id});
+	queue.send('matchmaking', {type: 'cancel', id: req.body.id});
 	return res.sendStatus(200);
 });
 

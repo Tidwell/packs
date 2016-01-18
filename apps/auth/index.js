@@ -9,7 +9,6 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/packs');
 
 var app = express();
-var queueSender = require('../../lib/queue-sender');
 var crossDomain = require('../../lib/cross-domain');
 
 function auth(req, res, next) {

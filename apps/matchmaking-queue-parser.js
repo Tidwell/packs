@@ -1,55 +1,45 @@
-var config = require('../config.js');
-
-var aws = require("aws-sdk");
-var Consumer = require('sqs-consumer');
-
-var sqs = new aws.SQS({
-	region: config.region,
-	accessKeyId: config.accessKeyId,
-	secretAccessKey: config.secretAccessKey,
-});
-
-var queueSender = require('../lib/queue-sender');
+var queue = require('../lib/queue');
 
 var activeSeeks = [];
 
-var matchmakingQueueParser = Consumer.create({
-	queueUrl: config.queueUrl,
-	handleMessage: function(message, done) {
-		var data = JSON.parse(message.Body);
-		switch (data.type) {
-			case 'matchmaking':
-				if (activeSeeks.indexOf(data.id) !== -1) {
-					break;
-				}
+function handleMessage(message, done) {
+	var data = JSON.parse(message.Body);
+	switch (data.type) {
+		case 'search':
+			if (activeSeeks.indexOf(data.id) === -1) {
 				activeSeeks.push(data.id);
-				break;
-			case 'cancel-matchmaking':
-				if (activeSeeks.indexOf(data.id) === -1) {
-					break;
-				}
+			}
+			checkPairings();
+			return done();
+		case 'cancel':
+			if (activeSeeks.indexOf(data.id) !== -1) {
 				activeSeeks.splice(activeSeeks.indexOf(data.id), 1);
-				break;
-		}
-		checkPairings();
-		console.log('Awaiting pairings: ' + activeSeeks.length + ' users.');
-		done();
-	},
-	sqs: sqs
-});
+			}
+			checkPairings();
+			return done();
+	}
+	console.log('ERR', message, 'NOT HANDLED');
+	return done({
+		err: 'not_handled_by_service'
+	});
+}
+
+var matchmakingQueueParser = queue.listen('matchmaking', handleMessage);
 
 //randomly pulls 2 players from the queue and pairs them up
 function checkPairings() {
+	console.log('Awaiting pairings: ' + activeSeeks.length + ' users.');
 	while (activeSeeks.length >= 2) {
 		var players = [];
-		var rand1 = Math.floor(Math.random()*activeSeeks.length);
+		var rand1 = Math.floor(Math.random() * activeSeeks.length);
 		var randomPlayer = activeSeeks.splice(rand1, 1)[0];
 		//do it in this order since we need to remove the selected one before we randomly decide the next one
-		var rand2 = Math.floor(Math.random()*activeSeeks.length);
+		var rand2 = Math.floor(Math.random() * activeSeeks.length);
 		var randomPlayer2 = activeSeeks.splice(rand2, 1)[0];
 		players.push(randomPlayer);
 		players.push(randomPlayer2);
-		queueSender({type: 'game-pairing', players: players});
+		queue.send('game-pairing', {
+			players: players
+		});
 	}
 }
-matchmakingQueueParser.start();
