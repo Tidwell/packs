@@ -2,8 +2,7 @@ var queue = require('../lib/queue');
 
 var activeSeeks = [];
 
-function handleMessage(message, done) {
-	var data = JSON.parse(message.Body);
+function handleMessage(data, done) {
 	switch (data.type) {
 		case 'search':
 			if (activeSeeks.indexOf(data.id) === -1) {
@@ -18,7 +17,7 @@ function handleMessage(message, done) {
 			checkPairings();
 			return done();
 	}
-	console.log('ERR', message, 'NOT HANDLED');
+	console.log('ERR', data, 'NOT HANDLED');
 	return done({
 		err: 'not_handled_by_service'
 	});

@@ -5,13 +5,13 @@
 	// };
 
 	function init() {
-		
+		var socket = io('http://localhost:3004');
+		socket.on('game-event', function(data){
+			console.log(data);
+		});
 	}
 	function render() {
-		rivets.bind($('[template]'), {game: game});
+		//rivets.bind($('[template]'), {game: game});
 	}
-	function update(ev) {
-		console.log('update', ev);
-	}
-	init();
+	$(init);
 }(jQuery));

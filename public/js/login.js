@@ -1,4 +1,7 @@
 (function() {
+	window.USERID = null;
+	window.USERTOKEN = null;
+	
 	var $form;
 	var data = {
 		authed: false

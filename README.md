@@ -21,14 +21,13 @@ TODO
 - write tests for matchmaking queue service
 - write tests for auth service
 
-- game app
-	-emit to the socket message queue
+-create node API for checking if user token is valid
+	-returns user id, user name
 
-- have the socket service listen for events
-	-serve socketio
-	-pipe game events to the correct socket rooms
-	-emit connect/disconnect events
-		-have matchmaker listen and remove
-		-have game listen
+-pipe game events to the correct socket rooms
+
+-emit connect/disconnect events
+	-have matchmaker listen and remove
+	-have game listen
 
 -setup pm2 config

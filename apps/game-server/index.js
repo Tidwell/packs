@@ -4,8 +4,7 @@ var GameModel = require('./models/game');
 
 var games = [];
 
-function handleMessage(message, done) {
-	var data = JSON.parse(message.Body);
+function handleMessage(data, done) {
 	var players = [];
 	
 	data.players.forEach(function(playerId){
@@ -13,7 +12,7 @@ function handleMessage(message, done) {
 	});
 	var game = new GameModel({players: players});
 	game.save(function(err,game){
-		console.log('New game created: ', game);
+		queue.send('socket', { to: data.players, data: game.toObject() });
 		done();
 	});
 }
