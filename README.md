@@ -43,8 +43,6 @@ TODO
 
 
 SOCKET
--add auth check
--pipe game events to the correct socket rooms
 -emit connect/disconnect events
 
 AUTH
@@ -56,4 +54,3 @@ MATCHMAKER
 GAME
 -listen for socket disconnect and handle
 
--setup pm2 config

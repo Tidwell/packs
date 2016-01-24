@@ -19,6 +19,7 @@
 		window.USERID = data.user.id;
 		window.USERTOKEN = data.user.token;
 		data.authed = true;
+		SOCKET.emit('auth', {id: USERID, token: USERTOKEN });
 	}
 
 	function setFail(res) {

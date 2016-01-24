@@ -1,14 +1,19 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var api = require('../lib/api');
 
 io.on('connection', function(socket) {
-	console.log('user connected');
 	socket.on('disconnect', function() {
 		console.log('user disconnected');
 	});
-
-	//on auth socket.join() the user's own room
+	socket.on('auth', function(data) {
+		api.checkAuth(data.token, function(err,user){
+			if (err) { return console.log(err); }
+			socket.sockUser = user;
+			socket.join(user.id);
+		});
+	});
 });
 
 http.listen(3004, function() {
@@ -18,9 +23,9 @@ http.listen(3004, function() {
 var queue = require('../lib/queue');
 
 function sendSocketMsg(msg,done) {
-	console.log('send to ', msg.to, msg.data);
-	//TODO emit only to the to rooms
-	io.emit('game-event', msg.data);
+	msg.to.forEach(function(room) {
+		io.to(room).emit('game-event', msg.data);
+	});
 	done();
 }
 

@@ -12,8 +12,8 @@
 	}
 
 	function init() {
-		var socket = io(PACKS_SERVICES.socket);
-		socket.on('game-event', function(data){
+		window.SOCKET = io(PACKS_SERVICES.socket);
+		SOCKET.on('game-event', function(data){
 			console.log(data);
 		});
 	}

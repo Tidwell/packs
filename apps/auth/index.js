@@ -139,7 +139,7 @@ app.get('/user/:token', function(req, res) {
 		if (err || !users || users.length > 1) {
 			return res.sendStatus(400);
 		}
-		res.json(200);
+		res.json({id: users[0].id, name: users[0].name});
 	});
 });
 
