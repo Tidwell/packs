@@ -1,5 +1,11 @@
 Packs Game Servers
 
+install mongo
+
+install node
+
+run mongo
+
 ``npm install``
 
 Create config.js with AWS SQS config info:
@@ -14,20 +20,40 @@ module.exports = {
 ```
 
 ``npm start``
+all services will be on separate sockets
+
+auth			3000
+static-files	3001
+socket			3004
+matchmaker 		3002
+
+
+OR USE THE VAGRANT
+
+``vagrant up``
+auth-dev.packs.com
+app-dev.packs.com
+socket-dev.packs.com
+matchmaker-dev.packs.com
+
+add to etc/hosts
+``10.0.33.34      auth-dev.packs.com app-dev.packs.com socket-dev.packs.com matchmaker-dev.packs.com``
 
 TODO
 
-- write tests for matchmaking service
-- write tests for matchmaking queue service
-- write tests for auth service
 
--create node API for checking if user token is valid
-	-returns user id, user name
-
+SOCKET
+-add auth check
 -pipe game events to the correct socket rooms
-
 -emit connect/disconnect events
-	-have matchmaker listen and remove
-	-have game listen
+
+AUTH
+-return user id, user name from auth check
+
+MATCHMAKER
+-listen for socket disconnect and remove
+
+GAME
+-listen for socket disconnect and handle
 
 -setup pm2 config

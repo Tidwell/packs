@@ -10,12 +10,24 @@
 <div auth>
     {data | json}
     <br />
-    <form rv-unless="data.authed">
+    <form login rv-unless="data.authed">
+        Login
         Username: <input name="username" type="text" />
         <br />
         Password: <input name="password" type="password" />
         <br />
         <input type="submit" value="Login" />
+        <br />
+        <span> {data.msg} </span>
+    </form>
+    <br />
+    <form register rv-unless="data.authed">
+        Register
+        Username: <input name="username" type="text" />
+        <br />
+        Password: <input name="password" type="password" />
+        <br />
+        <input type="submit" value="Register" />
         <br />
         <span> {data.msg} </span>
     </form>
@@ -102,7 +114,5 @@
 <script type="text/javascript" src="/js/login.js"></script>
 <script type="text/javascript" src="/js/matchmaking.js"></script>
 <script type="text/javascript" src="/js/render.js"></script>
-
-<script src="http://localhost:3004/socket.io/socket.io.js"></script>
 </body>
 </html>

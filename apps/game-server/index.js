@@ -1,5 +1,12 @@
 var queue = require('../../lib/queue');
 
+var mongoose = require('mongoose');
+var services = require('../../lib/services');
+
+if (mongoose.connection.readyState !== 2) {
+	mongoose.connect(services.mongo);
+}
+
 var GameModel = require('./models/game');
 
 var games = [];

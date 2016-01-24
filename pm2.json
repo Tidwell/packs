@@ -1,0 +1,57 @@
+{
+    "apps": [{
+        "name": "auth",
+        "script": "auth/index.js",
+        "watch": ["apps", "lib"],
+        "merge_logs": true,
+        "cwd": "./apps/",
+        "env": {
+            "NODE_ENV": "development"
+        }
+    }, {
+        "name": "app",
+        "script": "static-file.js",
+        "watch": ["apps", "lib"],
+        "merge_logs": true,
+        "cwd": "./apps/",
+        "env": {
+            "NODE_ENV": "development"
+        }
+    }, {
+        "name": "socket",
+        "script": "socket.js",
+        "watch": ["apps", "lib"],
+        "merge_logs": true,
+        "cwd": "./apps/",
+        "env": {
+            "NODE_ENV": "development"
+        }
+    }, {
+        "name": "matchmaker",
+        "script": "matchmaker.js",
+        "watch": ["apps", "lib"],
+        "merge_logs": true,
+        "cwd": "./apps/",
+        "env": {
+            "NODE_ENV": "development"
+        }
+    }, {
+        "name": "matchmaking-queue-parser",
+        "script": "matchmaking-queue-parser.js",
+        "watch": ["apps", "lib"],
+        "merge_logs": true,
+        "cwd": "./apps/",
+        "env": {
+            "NODE_ENV": "development"
+        }
+    }, {
+        "name": "game-server",
+        "script": "game-server/index.js",
+        "watch": ["apps", "lib"],
+        "merge_logs": true,
+        "cwd": "./apps/",
+        "env": {
+            "NODE_ENV": "development"
+        }
+    }]
+}

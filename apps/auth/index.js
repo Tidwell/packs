@@ -5,8 +5,9 @@ var crypto = require('crypto');
 
 var UserModel = require('./models/user');
 var mongoose = require('mongoose');
+var services = require('../../lib/services');
 
-mongoose.connect('mongodb://localhost/packs');
+mongoose.connect(services.mongo);
 
 var app = express();
 var crossDomain = require('../../lib/cross-domain');
@@ -71,13 +72,47 @@ function authenticate(req, res) {
 		//generate the users token
 		user.token = generateToken();
 		//save it back
-		user.save(function(err,user){
+		user.save(function(err, user) {
 			var u = sanitizeUser(user);
 			req.session.user = u;
 			res.json(u);
 		});
 	});
+   
+}
 
+function register(req, res) {
+	if (req.session.user) {
+		return res.status(400).json({
+			error: 'Already Authenticated'
+		});
+	}
+	if (!req.body.username || !req.body.password) {
+		return res.status(400).json({
+			error: 'Requires username and password'
+		});
+	}
+	
+	UserModel.findOne({
+		name: req.body.username
+	}, function(err, user) {
+		if (user) { return res.status(400).json({ error: 'Username in use' }); }
+		var u = new UserModel();
+		u.name = req.body.username;
+		/*
+			
+			BAD BAD BAD FIX ME
+
+		 */
+		u.password = req.body.password;
+		u.save(function(err, user) {
+			if (err) {
+				return res.sendStatus(500);
+			}
+			authenticate(req,res);
+		});
+
+	});
 }
 
 app.post('/login', bodyParser.urlencoded({
@@ -89,8 +124,10 @@ app.get('/logout', function(req, res) {
 	res.sendStatus(200);
 });
 
+app.post('/register', bodyParser.urlencoded({ extended: false }), register);
+
 //profile
-app.get('/user', auth, function(req,res){
+app.get('/user', auth, function(req, res) {
 	res.json(req.session.user);
 });
 
@@ -98,8 +135,10 @@ app.get('/user', auth, function(req,res){
 app.get('/user/:token', function(req, res) {
 	UserModel.find({
 		token: req.params.token
-	}, function(err,users){
-		if (err || !users || users.length > 1) { return res.sendStatus(400); }
+	}, function(err, users) {
+		if (err || !users || users.length > 1) {
+			return res.sendStatus(400);
+		}
 		res.json(200);
 	});
 });

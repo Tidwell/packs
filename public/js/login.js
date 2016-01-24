@@ -3,6 +3,7 @@
 	window.USERTOKEN = null;
 	
 	var $form;
+	var $formRegister;
 	var data = {
 		authed: false
 	};
@@ -37,6 +38,15 @@
 			});
 		return false;
 	}
+	function register() {
+		data.msg = '';
+		API.register($formRegister.find('[name="username"]').val(), $formRegister.find('[name="password"]').val())
+			.then(setAuthed)
+			.fail(function(res) {
+				setFail(res);
+			});
+		return false;
+	}
 
 	function logout() {
 		API.logout()
@@ -51,13 +61,15 @@
 
 	function init() {
 		$auth = $('[auth]');
-		$form = $auth.find('form');
+		$form = $auth.find('form[login]');
+		$formRegister = $auth.find('form[register]');
 
 		rivets.bind($auth, {
 			data: data
 		});
 
-		$auth.on('submit', 'form', login);
+		$auth.on('submit', 'form[login]', login);
+		$auth.on('submit', 'form[register]', register);
 
 		$auth.on('click', '[logout]', logout);
 	}
