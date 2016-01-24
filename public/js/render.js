@@ -1,8 +1,9 @@
 (function($) {
-	var game = {};
-	// game.activePlayerName = function() {
-	// 	return this.players[this.activePlayer] ? this.players[this.activePlayer].name : 'UNDEFINED PLAYER NAME';
-	// };
+	window.GAME = game = {};
+	game.activePlayerName = function() {
+		console.log(game);
+		return game.data.players[game.data.activePlayer] ? game.data.players[game.data.activePlayer].name : 'UNDEFINED PLAYER NAME';
+	};
 
 	function load() {
 		var s = document.createElement('script');
@@ -14,11 +15,12 @@
 	function init() {
 		window.SOCKET = io(PACKS_SERVICES.socket);
 		SOCKET.on('game-event', function(data){
-			console.log(data);
+			game.data = data;
 		});
 	}
 	function render() {
-		//rivets.bind($('[template]'), {game: game});
+		rivets.bind($('[template]'), {game: game});
 	}
+	$(render);
 	API.onReady(load);
 }(jQuery));

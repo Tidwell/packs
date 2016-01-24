@@ -50,18 +50,21 @@
     <br />
     <span rv-if="data.searching">Searching</span>
 </div>
-<div template name="board"> 
-    <div>Turn: {game.turn}</div>
-    <div>Active Player: <span rv-text="game.activePlayerName < activePlayer"></span></div>
+
+
+
+<div template name="board" rv-if="game.data.started"> 
+    <div>Turn: {game.data.turn}</div>
+    <div>Active Player: <span rv-text="game.data.activePlayerName < activePlayer"></span></div>
     <br />
-    <div rv-each-player="game.players">
+    <div rv-each-player="game.data.players">
         <div>{ player.name }</div>
         <div>Currency { player.currency }</div>
         <br />
         PLAY
         <div class="zone">
             <div class="card" rv-each-card="player.zones.play">
-                { card.name }
+                { card }
                 <span>{ card.cost }</span>
                 <p>
                     { card.text }
@@ -72,7 +75,7 @@
         DECK
         <div class="zone">
             <div class="card" rv-each-card="player.zones.deck">
-                { card.name }
+                { card }
                 <span>{ card.cost }</span>
                 <p>
                     { card.text }
@@ -83,7 +86,7 @@
         HAND
         <div class="zone">
             <div class="card" rv-each-card="player.zones.hand">
-                { card.name }
+                { card }
                 <span>{ card.cost }</span>
                 <p>
                     { card.text }
@@ -94,7 +97,7 @@
         DISCARD
         <div class="zone">
             <div class="card" rv-each-card="player.zones.discard">
-                { card.name }
+                { card }
                 <span>{ card.cost }</span>
                 <p>
                     { card.text }
