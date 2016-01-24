@@ -19,9 +19,6 @@ function handleMessage(data, done) {
 	});
 	var game = new GameModel({players: players});
 	game.start();
-	game.players.forEach(function(p){
-		p.populateDeck();
-	});
 	game.save(function(err,game){
 		queue.send('socket', { to: data.players, data: game.toObject() });
 		done();

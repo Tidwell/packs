@@ -14,6 +14,11 @@ Game.methods.start = function() {
 	this.turn = 1;
 	//randomly decide who goes first
 	this.activePlayer = Math.floor(Math.random()*2);
+
+	this.players.forEach(function(p){
+		p.populateDeck();
+	});
+
 	this.drawStarting();
 	
 	return this;
