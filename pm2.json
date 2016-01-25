@@ -10,7 +10,7 @@
         }
     }, {
         "name": "app",
-        "script": "static-file.js",
+        "script": "apps/index.js",
         "watch": ["apps", "lib"],
         "merge_logs": true,
         "cwd": "./apps/",

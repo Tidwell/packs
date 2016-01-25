@@ -40,17 +40,4 @@ add to etc/hosts
 ``10.0.33.34      auth-dev.packs.com app-dev.packs.com socket-dev.packs.com matchmaker-dev.packs.com``
 
 TODO
-
-
-SOCKET
--emit connect/disconnect events
-
-AUTH
--return user id, user name from auth check
-
-MATCHMAKER
--listen for socket disconnect and remove
-
-GAME
--listen for socket disconnect and handle
-
+https://trello.com/b/WiciXcIq/packs

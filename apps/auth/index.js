@@ -117,14 +117,14 @@ function register(req, res) {
 
 app.post('/login', bodyParser.urlencoded({
 	extended: false
-}), authenticate);
+}), bodyParser.json(), authenticate);
 
 app.get('/logout', function(req, res) {
 	req.session.destroy();
 	res.sendStatus(200);
 });
 
-app.post('/register', bodyParser.urlencoded({ extended: false }), register);
+app.post('/register', bodyParser.urlencoded({ extended: false }), bodyParser.json(), register);
 
 //profile
 app.get('/user', auth, function(req, res) {

@@ -14,6 +14,8 @@ var crossDomain = require('../lib/cross-domain');
 app.use(bodyParser.urlencoded({
 	extended: false
 }));
+app.use(bodyParser.json());
+
 app.use(crossDomain);
 var checkAuth = require('../lib/check-auth');
 
