@@ -20,7 +20,9 @@ function handleMessage(data, done) {
 	var game = new GameModel({players: players});
 	game.start();
 	game.save(function(err,game){
-		queue.send('socket', { to: data.players, data: game.toObject() });
+		var toSend = { to: data.players, data: game.toObject() };
+		console.log('sending game message', toSend)
+		queue.send('socket', toSend);
 		done();
 	});
 }

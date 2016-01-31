@@ -21,9 +21,9 @@
 
 		socket.on('game-event', handleGameEvent);
 
-		$scope.$on("$destroy", function() {
+		$scope.$on('$destroy', function() {
 			if (socket.socket) {
-				socket.socket.removeListener('game-event', handleGameEvent);
+				socket.socket.removeAllListeners('game-event');
 			}
 		});
 	});

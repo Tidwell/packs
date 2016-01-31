@@ -2,47 +2,70 @@
 (function() {
 	var services;
 
-	var ready = [];
-	var emitRdy = [];
-	var loaded = false;
-	var globalSocket;
+	//singleton
+	var socketInstance = null;
+
+	var SocketConnection = function() {
+		if (socketInstance) { return socketInstance; }
+		this.loaded = false;
+		this.readyFunctions = [];
+		this.emitReadyFunctions = [];
+		this.scope = null;
+		this.socket = null;
+
+		socketInstance = this;
+		return this;
+	};
+
+	SocketConnection.prototype.on = function(eventName, callback) {
+		var self = this;
+		if (!self.loaded) {
+			return self.readyFunctions.push({ev: eventName, fn: callback});
+		}
+		self.socket.on(eventName, function() {
+			var args = arguments;
+			self.scope.$apply(function() {
+				callback.apply(self.socket, args);
+			});
+		});
+	};
+
+	SocketConnection.prototype.emit = function(eventName, data, callback) {
+		var self = this;
+		if (!self.loaded) {
+			return self.emitReadyFunctions.push({ev: eventName, data: data, fn: callback});
+		}
+		
+		self.socket.emit(eventName, data, function() {
+			var args = arguments;
+			self.scope.$apply(function() {
+				if (callback) {
+					callback.apply(self.socket, args);
+				}
+			});
+		});
+	};
+
+	SocketConnection.prototype.ready = function(socket, scope) {
+		var self = this;
+		self.socket = socket;
+		self.scope = scope;
+
+		self.readyFunctions.forEach(function(rdy) {
+			self.socket.on(rdy.ev, rdy.fn);
+		});
+		self.emitReadyFunctions.forEach(function(rdy) {
+			self.socket.emit(rdy.ev, rdy.data, rdy.fn);
+		});
+		self.readyFunctions = [];
+		self.emitReadyFunctions = [];
+		self.loaded = true;
+	};
 
 	angular.module('packsApp').factory('socket', ['allServices', '$rootScope', function(allServices, $rootScope) {
-		var socket = {
-			on: function(eventName, callback) {
-				if (!loaded) {
-					return ready.push({ev: eventName, fn: callback});
-				}
-				var self = this;
-				globalSocket.on(eventName, function() {
-					var args = arguments;
-					$rootScope.$apply(function() {
-						callback.apply(globalSocket, args);
-					});
-				});
-			},
-			emit: function(eventName, data, callback) {
-				if (!loaded) {
-					return emitRdy.push({ev: eventName, data: data, fn: callback});
-				}
-				var self = this;
-				globalSocket.emit(eventName, data, function() {
-					var args = arguments;
-					$rootScope.$apply(function() {
-						if (callback) {
-							callback.apply(globalSocket, args);
-						}
-					});
-				});
-			},
-			socket: globalSocket
-		};
+		if (socketInstance) { return socketInstance; }
 
-		if (loaded) {
-			console.log('early ret', socket)
-			return socket;
-		}
-
+		socketInstance = new SocketConnection();
 		allServices.get().then(function(data) {
 			services = data;
 			load();
@@ -56,21 +79,9 @@
 		}
 
 		function init() {
-			console.log('initing')
-			globalSocket = window.io(services.socket);
-			ready.forEach(function(rdy) {
-				console.log('unspool ready', rdy)
-				globalSocket.on(rdy.ev, rdy.fn);
-			});
-			emitRdy.forEach(function(rdy) {
-				console.log('unspool readyemit', rdy)
-				globalSocket.emit(rdy.ev, rdy.data, rdy.fn);
-			});
-			ready = [];
-			emitRdy = [];
-			loaded = true;
+			socketInstance.ready(window.io(services.socket), $rootScope);
 		}
-		console.log('late ret', socket)
-		return socket;
+
+		return socketInstance;
 	}]);
 }());
