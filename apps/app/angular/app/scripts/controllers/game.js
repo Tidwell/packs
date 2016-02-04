@@ -8,6 +8,12 @@
  * Controller of the packsApp
  */
 (function() {
+	var events = [
+		'known-info-change',
+		'public-info-change',
+		'start-of-turn',
+		'start-of-game',
+	];
 
 	angular.module('packsApp').controller('GameCtrl', function(socket, user, $scope) {
 		var vm = this;
@@ -19,11 +25,15 @@
 			vm.data = data;
 		}
 
-		socket.on('game-event', handleGameEvent);
+		events.forEach(function(e){
+			socket.on(e, handleGameEvent);
+		});
 
 		$scope.$on('$destroy', function() {
 			if (socket.socket) {
-				socket.socket.removeAllListeners('game-event');
+				events.forEach(function(e){
+					socket.socket.removeAllListeners(e);
+				});
 			}
 		});
 	});

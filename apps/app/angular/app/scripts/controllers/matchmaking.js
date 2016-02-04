@@ -8,19 +8,37 @@
  * Controller of the packsApp
  */
 angular.module('packsApp')
-	.controller('MatchmakingCtrl', function($scope, user, api) {
+	.controller('MatchmakingCtrl', function($scope, user, api, socket, $location) {
 		var vm = this;
 		vm.user = user.get();
+		vm.sendingMessage = false;
 		vm.searching = false;
 
 		vm.search = function() {
+			vm.sendingMessage = true;
 			api.matchmake(vm.user.id, vm.user.token).then(function() {
 				vm.searching = true;
+				vm.sendingMessage = false;
 			});
 		};
 		vm.cancel = function() {
+			vm.sendingMessage = true;
 			api.cancelMatchmake(vm.user.id, vm.user.token).then(function() {
 				vm.searching = false;
+				vm.sendingMessage = false;
 			});
 		};
+
+		function handleGameEvent(data) {
+			console.log('ev', data)
+			return $location.path('/game');
+		}
+
+		socket.on('start-of-game', handleGameEvent);
+
+		$scope.$on('$destroy', function() {
+			if (socket.socket) {
+				socket.socket.removeAllListeners('start-of-game');
+			}
+		});
 	});

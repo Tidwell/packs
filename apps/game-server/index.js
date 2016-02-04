@@ -7,24 +7,32 @@ if (mongoose.connection.readyState !== 2) {
 	mongoose.connect(services.mongo);
 }
 
-var GameModel = require('./models/game');
+var create = require('./game').createGame;
 
-var games = [];
+var games = {};
 
-function handleMessage(data, done) {
+function createGame(data, done) {
 	var players = [];
 	
-	data.players.forEach(function(playerId){
-		players.push({userId: playerId, name: playerId});
+	data.players.forEach(function(id){
+		players.push({id: id, name: id});
 	});
-	var game = new GameModel({players: players});
+	var game = create(players);
 	game.start();
-	game.save(function(err,game){
-		var toSend = { to: data.players, data: game.toObject() };
-		console.log('sending game message', toSend)
-		queue.send('socket', toSend);
-		done();
-	});
+	games['game'+Object.keys(games).length] = game;
+	sendEvents(game)
 }
 
-var createGameQueueParser = queue.listen('game-pairing', handleMessage);
+function sendEvents(game) {
+	var playerIds = [];
+	game.players.forEach(function(p){
+		playerIds.push(p.id);
+	});
+	game.log.forEach(function(e){
+		var toSend = { type: e.type, to: playerIds, data: e.data };
+		queue.send('socket', toSend);
+	});
+
+}
+
+var createGameQueueParser = queue.listen('game-pairing', createGame);

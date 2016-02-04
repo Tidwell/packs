@@ -35,6 +35,16 @@ angular
 				controller: 'RegisterCtrl',
 				controllerAs: 'register'
 			})
+			.when('/profile', {
+				templateUrl: 'views/profile.html',
+				controller: 'ProfileCtrl',
+				controllerAs: 'vm'
+			})
+			.when('/game', {
+				templateUrl: '/views/game.html',
+				controller: 'GameCtrl',
+				controllerAs: 'game'
+			})
 			.otherwise({
 				redirectTo: '/'
 			});

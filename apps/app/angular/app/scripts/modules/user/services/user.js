@@ -12,7 +12,6 @@ angular.module('packsApp').factory('user', ['api', 'socket', function(api, socke
 		delete user.username;
 		delete user.id;
 		delete user.token;
-		socket.emit('logout');
 	}
 
 	function setAuthed(res) {

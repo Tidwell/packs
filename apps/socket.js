@@ -14,6 +14,10 @@ io.on('connection', function(socket) {
 			socket.join(user.id);
 		});
 	});
+	socket.on('logout', function() {
+		socket.leave(socket.sockUser.id);
+		socket.sockUser = null;
+	});
 });
 
 http.listen(3004, function() {
@@ -24,7 +28,7 @@ var queue = require('../lib/queue');
 
 function sendSocketMsg(msg,done) {
 	msg.to.forEach(function(room) {
-		io.to(room).emit('game-event', msg.data);
+		io.to(room).emit(msg.type, msg.data);
 	});
 	done();
 }

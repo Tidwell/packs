@@ -1,5 +1,4 @@
 <div name="board" ng-controller="GameCtrl as game">
-    {{game}}
     <div>Turn: {{game.data.turn}}</div>
     <div>Active Player: <span>{{game.data.players[game.data.activePlayer].name}}</span></div>
     <br />
@@ -9,48 +8,25 @@
         <br />
         PLAY
         <div class="zone">
-            <div class="card" ng-repeat="card in player.zones.play track by $index">
-                {{ card }}
-                <span>{{ card.cost }}</span>
-                <p>
-                    {{ card.text }}
-                    {{ card.id }}
-                </p>
+            <div class="card" ng-repeat="card in player.zones.play track by $index" ng-include="'views/card.html'">
             </div>
         </div>
         DECK
         <div class="zone">
-            <div class="card" ng-repeat="card in player.zones.deck track by $index">
-                {{ card }}
-                <span>{{ card.cost }}</span>
-                <p>
-                    {{ card.text }}
-                    {{ card.id }}
-                </p>
+            <div class="card" ng-repeat="card in player.zones.deck track by $index" ng-include="'views/card.html'">
             </div>
         </div>
         HAND
         <div class="zone">
-            <div class="card" ng-repeat="card in player.zones.hand track by $index">
-                {{ card }}
-                <span>{{ card.cost }}</span>
-                <p>
-                    {{ card.text }}
-                    {{ card.id }}
-                </p>
+            <div class="card" ng-repeat="card in player.zones.hand track by $index" ng-include="'views/card.html'">
             </div>
         </div>
         DISCARD
         <div class="zone">
-            <div class="card" ng-repeat="card in player.zones.discard track by $index">
-                {{ card }}
-                <span>{{ card.cost }}</span>
-                <p>
-                    {{ card.text }}
-                    {{ card.id }}
-                </p>
+            <div class="card" ng-repeat="card in player.zones.discard track by $index" ng-include="'views/card.html'">
             </div>
         </div>
         <hr />
     </div>
+    {{game.data}}
 </div>
