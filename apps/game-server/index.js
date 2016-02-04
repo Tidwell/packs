@@ -25,6 +25,7 @@ function createGame(data, done) {
 	game.start();
 	games['game' + Object.keys(games).length] = game;
 	sendEvents(game);
+	done();
 }
 
 function sendEvents(game) {

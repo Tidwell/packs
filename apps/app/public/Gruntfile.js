@@ -356,7 +356,7 @@ module.exports = function (grunt) {
             '*.html',
             'views/{,*/}*.html',
             'images/{,*/}*.{webp}',
-            'fonts/*'
+            'fonts/*',
           ]
         }, {
           expand: true,
@@ -440,6 +440,7 @@ module.exports = function (grunt) {
     'concat',
     'ngmin',
     'copy:dist',
+    'copy:styles',
     'cdnify',
     'cssmin',
     'uglify',
