@@ -48,6 +48,7 @@ function addZones(game, players) {
 	toBuyZone.addStack('buy3');
 
 	players.forEach(function(p, i) {
+		if (!p.pack) { console.log(p); throw new Error('no pack provided for player'); }
 		game.addPlayer(p);
 		var playerZones = game.zones.addZone('player-' + i, {
 			access: 'public',

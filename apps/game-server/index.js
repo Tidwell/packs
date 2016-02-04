@@ -13,25 +13,31 @@ var games = {};
 
 function createGame(data, done) {
 	var players = [];
-	
-	data.players.forEach(function(id){
-		players.push({id: id, name: id});
+
+	data.players.forEach(function(id) {
+		players.push({
+			id: id,
+			name: id,
+			pack: [{name: 'c1'},{name: 'c2'},{name: 'c3'},{name: 'c4'},{name: 'c5'}]
+		});
 	});
 	var game = create(players);
 	game.start();
-	games['game'+Object.keys(games).length] = game;
-	sendEvents(game)
+	games['game' + Object.keys(games).length] = game;
+	sendEvents(game);
 }
 
 function sendEvents(game) {
 	var playerIds = [];
-	game.players.forEach(function(p){
+	game.players.forEach(function(p) {
 		playerIds.push(p.id);
 	});
-	game.log.forEach(function(e){
-		var toSend = { type: e.type, to: playerIds, data: e.data };
-		queue.send('socket', toSend);
-	});
+	var toSend = {
+		type: 'game-event',
+		to: playerIds,
+		data: game.serialize()
+	};
+	queue.send('socket', toSend);
 
 }
 
