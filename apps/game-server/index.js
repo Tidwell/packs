@@ -57,7 +57,7 @@ restApp.post('/game', checkAuth, function(req, res) {
 		});
 	}
 	if (!toRet) { return res.sendStatus(400).send('No game for user'); }
-	return res.send(toRet);
+	return res.send(toRet.serialize());
 });
 
 restApp.listen(3005);
