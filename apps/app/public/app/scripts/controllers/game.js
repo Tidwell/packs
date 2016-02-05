@@ -30,10 +30,11 @@
 		'phase:entered'
 	];
 
-	angular.module('packsApp').controller('GameCtrl', function(socket, user, $scope) {
+	angular.module('packsApp').controller('GameCtrl', function(socket, user, $scope, game) {
 		var vm = this;
 		vm.user = user.get();
 		vm.data = {};
+		window.GAME = vm.game = game.get();
 
 		function handleGameEvent(data) {
 			console.log('handle event', JSON.parse(data));
@@ -44,6 +45,20 @@
 		// 	socket.on(e, handleGameEvent);
 		// });
 		socket.on('game-event', handleGameEvent);
+
+		vm.getCurrency = function(playerIndex) {
+			return vm.game.data.zones.zones['player-'+playerIndex].stacks.currency.cards.length;
+		};
+
+		vm.getDeck = function(playerIndex) {
+			return vm.game.data.zones.zones['player-'+playerIndex].zones.deck.stacks.deck.cards;
+		};
+		vm.getHand = function(playerIndex) {
+			return vm.game.data.zones.zones['player-'+playerIndex].zones.hand.stacks.hand.cards;
+		};
+		vm.getDiscard = function(playerIndex) {
+			return vm.game.data.zones.zones['player-'+$index].stacks.discard.cards;
+		};
 
 		$scope.$on('$destroy', function() {
 			if (socket.socket) {

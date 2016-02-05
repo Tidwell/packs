@@ -35,6 +35,9 @@ angular.module('packsApp').factory('api', ['$http', 'allServices', function($htt
 		},
 		cancelMatchmake: function(id, token) {
 			return $http.post(services.matchmaking + '/cancel-search-game', {id: id, token: token}, config);
+		},
+		getGame: function(id, token) {
+			return $http.post(services.game + '/game', {id: id, token: token}, config);
 		}
 	};
 

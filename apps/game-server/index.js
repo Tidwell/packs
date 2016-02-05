@@ -34,12 +34,30 @@ function sendEvents(game) {
 		playerIds.push(p.id);
 	});
 	var toSend = {
-		type: 'game-event',
+		type: 'game-started',
 		to: playerIds,
-		data: game.serialize()
+		data: {}
 	};
 	queue.send('socket', toSend);
 
 }
 
 var createGameQueueParser = queue.listen('game-pairing', createGame);
+
+var restApp = require('./rest');
+var checkAuth = require('../../lib/check-auth');
+restApp.post('/game', checkAuth, function(req, res) {
+	if (!req.body.id) { res.sendStatus(400); }
+	var toRet = null;
+	for(var game in games) {
+		games[game].players.forEach(function(p) {
+			if (p.id === req.body.id) {
+				toRet = games[game];
+			}
+		});
+	}
+	if (!toRet) { return res.sendStatus(400).send('No game for user'); }
+	return res.send(toRet);
+});
+
+restApp.listen(3005);

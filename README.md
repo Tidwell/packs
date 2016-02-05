@@ -37,7 +37,7 @@ socket-dev.packs.com
 matchmaker-dev.packs.com
 
 add to etc/hosts
-``10.0.33.34      auth-dev.packs.com app-dev.packs.com socket-dev.packs.com matchmaker-dev.packs.com``
+``10.0.33.34      auth-dev.packs.com app-dev.packs.com socket-dev.packs.com matchmaker-dev.packs.com game-dev.packs.com``
 
 TODO
 https://trello.com/b/WiciXcIq/packs

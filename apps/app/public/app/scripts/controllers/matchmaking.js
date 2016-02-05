@@ -30,11 +30,10 @@ angular.module('packsApp')
 		};
 
 		function handleGameEvent(data) {
-			console.log('ev', data)
 			return $location.path('/game');
 		}
 
-		socket.on('game-event', handleGameEvent);
+		socket.on('game-started', handleGameEvent);
 
 		$scope.$on('$destroy', function() {
 			if (socket.socket) {
